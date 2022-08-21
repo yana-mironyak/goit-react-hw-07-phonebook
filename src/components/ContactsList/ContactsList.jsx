@@ -1,23 +1,19 @@
 import ContactItem from 'components/ContactItem/ContactItem';
-import { deleteContacts, getContactsItem } from "redux/contactsSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useGetContactsQuery } from 'redux/contactsSlice';
 
 const ContactsList = () => {
-    const dispatch = useDispatch();
-    const contacts = useSelector(getContactsItem);
-    const filter = useSelector(state => state.contacts.filter);
+  const { data } = useGetContactsQuery();
+  const filter = useSelector(state => state.filter);
 
-    const getFilteredContacts = () => {    
-      return contacts.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase()));
+  const getFilteredContacts = () => {
+      return data.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase()));
     };
 
-    const deleteContact = (contactId) => {
-    dispatch(deleteContacts(contactId));
-    };
-    
-    return <ul>
-        {getFilteredContacts().map(({ id, name, number }) => <ContactItem key={id} id={id} name={name} number={number} onDeleteContact={deleteContact}/>)}
+  return <ul>
+        {data && getFilteredContacts().map(({ id, name, phone }) => <ContactItem key={id} id={id} name={name} phone={phone} />)}
     </ul>
 }
 
 export default ContactsList;
+
